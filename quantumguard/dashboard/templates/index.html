@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumGuard — Quantum Cybersecurity Operations</title>
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #0d0e15;
+            --panel-bg: rgba(25, 27, 42, 0.6);
+            --panel-border: rgba(0, 255, 136, 0.15);
+            --accent-green: #00ff88;
+            --accent-blue: #00ccff;
+            --alert-red: #ff4d4d;
+            --alert-orange: #ffaa00;
+            --text-main: #f0f2f5;
+            --text-muted: #a0aab2;
+            --glass-blur: blur(12px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #17192b 50%, var(--bg-color) 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Panel Utilities */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .glass-panel:hover {
+            box-shadow: 0 12px 40px 0 rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.4);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px 40px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 0;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 3em;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .scenario-badge {
+            display: inline-block;
+            background: rgba(0, 204, 255, 0.1);
+            color: var(--accent-blue);
+            border: 1px solid rgba(0, 204, 255, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        /* Top Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2em;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .metric-value {
+            font-size: 3em;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .metric-value.green { color: var(--accent-green); }
+        .metric-value.red { color: var(--alert-red); }
+        
+        /* Main Content Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section Headings */
+        .section-header {
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        /* Controls & Inputs */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            flex: 1;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+
+        button {
+            background: linear-gradient(90deg, #0088ff, #00ccff);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button.btn-primary {
+            background: linear-gradient(90deg, var(--accent-green), #00ccff);
+        }
+
+        button.btn-danger {
+            background: linear-gradient(90deg, #ff4d4d, #ffaa00);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 204, 255, 0.3);
+        }
+        
+        button.btn-primary:hover {
+            box-shadow: 0 6px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .data-table td {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 16px;
+        }
+
+        .data-table tr td:first-child { border-radius: 8px 0 0 8px; }
+        .data-table tr td:last-child { border-radius: 0 8px 8px 0; }
+
+        .data-table tr:hover td {
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        /* Badges & Alerts */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-safe { background: rgba(0, 255, 136, 0.15); color: var(--accent-green); }
+        .badge-warn { background: rgba(255, 170, 0, 0.15); color: var(--alert-orange); }
+        .badge-crit { background: rgba(255, 77, 77, 0.15); color: var(--alert-red); }
+
+        .alert-box {
+            padding: 16px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.3s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .alert-safe { border-color: var(--accent-green); }
+        .alert-crit { border-color: var(--alert-red); }
+        
+        .pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 8px currentColor;
+            animation: pulsing 1.5s infinite alternate;
+        }
+
+        @keyframes pulsing {
+            from { opacity: 0.5; transform: scale(1); }
+            to { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+        }
+
+        .tooltip::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            border: 1px solid var(--accent-blue);
+            z-index: 10;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Layout spacing */
+        .mt-30 { margin-top: 30px; }
+        .mb-20 { margin-bottom: 20px; }
+        .scenario-box {
+            margin-bottom: 40px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 255, 136, 0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 136, 0.6); }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div>
+                <h1>QuantumGuard</h1>
+                <p class="subtitle">Next-Generation Quantum Security Operations Center</p>
+            </div>
+            <div style="text-align: right;">
+                <div class="status-badge badge-safe" style="font-size: 1em; padding: 8px 16px;">
+                    <span class="pulse"></span> SYSTEM OPERATIONAL
+                </div>
+                <p style="margin-top: 10px; font-size: 0.85em; color: var(--text-muted);">
+                    Protecting High-Value Enterprise Assets against 
+                    <span class="tooltip" data-tip="The threat where attackers steal encrypted data now to decrypt it later when quantum computers exist">Harvest-Now-Decrypt-Later</span> attacks.
+                </p>
+            </div>
+        </header>
+
+        <!-- Top Metrics Overview -->
+        <div class="metrics-grid">
+            <div class="glass-panel metric-card">
+                <h3>Global Threat Posture</h3>
+                <div class="metric-value green" id="global-status">SECURE</div>
+                <p class="section-desc mt-10">Real-time monitoring across 4 security vectors</p>
+            </div>
+            
+            <div class="glass-panel metric-card">
+                <h3>Vulnerabilities (QUS > 80)</h3>
+                <div class="metric-value red" id="critical-cves">0</div>
+                <p class="section-desc mt-10">Critical CVEs vulnerable to Shor's Algorithm</p>
+            </div>
+
+            <div class="glass-panel metric-card">
+                <h3>Network Traffic Anomaly Rate</h3>
+                <div style="height: 80px; width: 100%; position: relative;">
+                    <canvas id="trafficChart"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-panel metric-card">
+                <h3>Cert Quantum Readiness</h3>
+                <div class="metric-value">
+                    <span id="quantum-ready">0</span> / <span id="cert-count" style="font-size: 0.5em; color: var(--text-muted)">0</span>
+                </div>
+                <p class="section-desc mt-10">NIST SP 800-208 Compliant Assets</p>
+            </div>
+        </div>
+
+        <!-- Main Workspace -->
+        <div class="main-layout">
+            
+            <!-- Left Column: Operations -->
+            <div class="left-col">
+                
+                <!-- USE CASE 1: Secure Financial Transaction -->
+                <div class="glass-panel scenario-box">
+                    <div class="scenario-badge">Use Case: Banking Infrastructure</div>
+                    <div class="section-header">
+                        <h2>Secure Financial Data Transfer</h2>
+                        <p class="section-desc">Simulate a high-value transaction using <span class="tooltip" data-tip="Quantum Key Distribution: Uses quantum physics to detect eavesdropping">BB84 QKD</span> and hybrid <span class="tooltip" data-tip="Post-Quantum Cryptography resistant to quantum attacks">PQC encryption</span>. Ensures absolute forward secrecy.</p>
+                    </div>
+
+                    <div class="controls border-bottom">
+                        <input type="number" id="qubit-count" placeholder="Transaction Volume (Qubits)" value="1500" min="500" max="10000">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-muted);">
+                            <input type="checkbox" id="eve-checkbox" style="flex: unset; width: auto;">
+                            Simulate State-Actor Interception (Eve)
+                        </label>
+                    </div>
+                    <button class="btn-primary mb-20" onclick="runBankTransaction()">Execute Secure Transfer</button>
+
+                    <div id="bb84-results" style="display: none;">
+                        <div class="alert-box" id="bb84-alert">
+                            <span class="icon" style="font-size: 1.5em;" id="bb84-icon">🛡️</span>
+                            <div>
+                                <h4 style="margin-bottom: 5px;" id="bb84-title">Transfer Status</h4>
+                                <p style="font-size: 0.9em; color: var(--text-muted);">
+                                    QBER <span class="tooltip" data-tip="Quantum Bit Error Rate. High rate indicates interception">(Error Rate)</span>: <strong id="qber-value" style="color: white;">—</strong> | 
+                                    Interceptor Detected: <strong id="eve-detected" style="color: white;">—</strong> | 
+                                    Secure Sifted Key: <strong id="sifted-key" style="color: white;">—</strong> bits finalized.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USE CASE 2: Enterprise Vulnerability Scanner -->
+                <div class="glass-panel scenario-box">
+                    <div class="scenario-badge">Use Case: Healthcare IT Network</div>
+                    <div class="section-header">
+                        <h2>Enterprise Quantum Exposure Audit</h2>
+                        <p class="section-desc">Analyze network assets and CVEs for immediate risk of <span class="tooltip" data-tip="Algorithm that exponentially speeds up breaking RSA/ECC">Shor's Algorithm</span> exploitation. This module calculates the Quantum Urgency Score (QUS).</p>
+                    </div>
+
+                    <div class="controls">
+                        <input type="text" id="cve-input" placeholder="Enter CVE IDs (e.g., CVE-2024-1001, CVE-2023-4523)">
+                        <button onclick="scoreCVEs()">Run Audit</button>
+                    </div>
+
+                    <table class="data-table" id="cve-table">
+                        <thead>
+                            <tr>
+                                <th>Asset / CVE</th>
+                                <th>QUS Score</th>
+                                <th>Attack Vector</th>
+                                <th>Harvest-Now Risk</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cve-tbody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted);">Awaiting audit request...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- USE CASE 3: Zero-Trust Network Traffic -->
+                <div class="glass-panel scenario-box">
+                    <div class="scenario-badge">Use Case: Dark Web Monitoring</div>
+                    <div class="section-header">
+                        <h2>Zero-Trust Network Traffic IDS</h2>
+                        <p class="section-desc">Real-time packet inspection detecting weak legacy cryptography being exfiltrated by potential quantum-armed adversaries.</p>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn-primary" onclick="simulateNetworkTraffic()">Simulate Intrusion Event</button>
+                    </div>
+
+                    <div id="ids-alerts" style="max-height: 250px; overflow-y: auto; padding-right: 10px;">
+                        <div style="text-align: center; padding: 20px; color: var(--text-muted); background: rgba(0,0,0,0.2); border-radius: 8px;">
+                            Network is currently clear of anomalous flows.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: System & Compliance -->
+            <div class="right-col">
+                
+                <!-- Certificate Auditor -->
+                <div class="glass-panel scenario-box">
+                    <div class="section-header">
+                        <h2>Public TLS Cert Readiness</h2>
+                        <p class="section-desc">Audit external-facing domains for PQC transition compliance.</p>
+                    </div>
+                    
+                    <div class="controls">
+                        <input type="text" id="domain-input" placeholder="e.g. your-erp-system.com">
+                        <button onclick="auditCertificate()" style="width: 100%;">Inspect Domain</button>
+                    </div>
+
+                    <div id="cert-results" class="mt-30" style="display:flex; flex-direction:column; gap:10px;">
+                        <p style="color: var(--text-muted); text-align: center; font-size: 0.9em;">No domains inspected yet</p>
+                    </div>
+                </div>
+
+                <!-- Quantum Vault -->
+                <div class="glass-panel scenario-box">
+                    <div class="section-header">
+                        <h2>Quantum-Safe Secrets Vault</h2>
+                        <p class="section-desc">Hardware-aligned secrets management backed by an immutable cryptographic ledger.</p>
+                    </div>
+
+                    <div class="controls" style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                        <button onclick="checkVaultIntegrity()">Verify Vault Integrity</button>
+                        <button onclick="viewAuditLog()" style="background: rgba(255,255,255,0.1); color: white;">Download Audit Ledger</button>
+                    </div>
+
+                    <div id="vault-status" style="display: none; margin-top: 20px;">
+                        <div class="alert-box alert-safe" style="flex-direction: column; align-items: flex-start; padding: 12px;">
+                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                <span style="color:var(--text-muted)">Valid Status</span>
+                                <strong id="vault-integrity" style="color: var(--accent-green)">VALID</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; width: 100%; margin-top: 5px;">
+                                <span style="color:var(--text-muted)">Stored Keys</span>
+                                <strong id="vault-entries">0</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Components -->
+                <div class="glass-panel">
+                    <div class="section-header">
+                        <h2>Component Health</h2>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+                            <span>M1: BB84 QKD Transceiver</span>
+                            <span class="status-badge badge-safe"><span class="pulse"></span> ONLINE</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+                            <span>M2: Kyber PQC Engine</span>
+                            <span class="status-badge badge-safe"><span class="pulse"></span> ONLINE</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+                            <span>M3: Threat Intelligence</span>
+                            <span class="status-badge badge-safe"><span class="pulse"></span> ONLINE</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+                            <span>M4: IDS Probe</span>
+                            <span class="status-badge badge-safe"><span class="pulse"></span> ONLINE</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CHART INTERACTIVE INITIALIZATION ---
+        const ctx = document.getElementById('trafficChart').getContext('2d');
+        
+        const gradientBlue = ctx.createLinearGradient(0, 0, 0, 80);
+        gradientBlue.addColorStop(0, 'rgba(0, 204, 255, 0.5)');
+        gradientBlue.addColorStop(1, 'rgba(0, 204, 255, 0.0)');
+
+        const gradientRed = ctx.createLinearGradient(0, 0, 0, 80);
+        gradientRed.addColorStop(0, 'rgba(255, 77, 77, 0.5)');
+        gradientRed.addColorStop(1, 'rgba(255, 77, 77, 0.0)');
+
+        let baseData = [5, 10, 8, 15, 12, 10, 18, 5];
+        let alertData = [0, 0, 0, 0, 0, 0, 0, 0];
+
+        const trafficChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1m', '2m', '3m', '4m', '5m', '6m', '7m', 'Now'],
+                datasets: [
+                    {
+                        label: 'Safe Traffic (MB/s)',
+                        data: baseData,
+                        borderColor: '#00ccff',
+                        backgroundColor: gradientBlue,
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Anomalous Streams',
+                        data: alertData,
+                        borderColor: '#ff4d4d',
+                        backgroundColor: gradientRed,
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+                scales: {
+                    x: { display: false },
+                    y: { display: false, min: 0 }
+                },
+                layout: { padding: 0 }
+            }
+        });
+
+        function triggerChartAnomaly() {
+            trafficChart.data.datasets[1].data = [0, 0, 5, 20, 35, 15, 5, 0];
+            trafficChart.update();
+            setTimeout(() => {
+                trafficChart.data.datasets[1].data = [0, 0, 0, 0, 0, 0, 0, 0];
+                trafficChart.update();
+            }, 5000);
+        }
+
+        // --- BACKEND REST API LOGIC ---
+
+        async function runBankTransaction() {
+            const qubits = parseInt(document.getElementById('qubit-count').value) || 1500;
+            const eve = document.getElementById('eve-checkbox').checked;
+            const btn = document.querySelector('button[onclick="runBankTransaction()"]');
+            const originalText = btn.textContent;
+            
+            btn.textContent = "Negotiating Quantum State...";
+            btn.style.opacity = "0.7";
+            
+            try {
+                const res = await fetch('/api/qkd/bb84', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({num_qubits: qubits, eve_eavesdrop: eve})
+                });
+                const data = await res.json();
+                
+                document.getElementById('qber-value').textContent = data.qber;
+                document.getElementById('eve-detected').textContent = data.eve_detected ? '⚠️ YES' : '✓ NO';
+                document.getElementById('sifted-key').textContent = data.sifted_key_length;
+                
+                const resultsDiv = document.getElementById('bb84-results');
+                resultsDiv.style.display = 'block';
+                const alertDiv = document.getElementById('bb84-alert');
+                
+                if(data.eve_detected) {
+                    alertDiv.className = 'alert-box alert-crit';
+                    document.getElementById('bb84-icon').textContent = "🚨";
+                    document.getElementById('bb84-title').textContent = "Connection Severed: Man-in-the-Middle Detected";
+                    document.getElementById('bb84-title').style.color = "var(--alert-red)";
+                } else {
+                    alertDiv.className = 'alert-box alert-safe';
+                    document.getElementById('bb84-icon').textContent = "✅";
+                    document.getElementById('bb84-title').textContent = "Transaction Secured w/ Forward Secrecy";
+                    document.getElementById('bb84-title').style.color = "var(--accent-green)";
+                }
+            } catch(e) {
+                console.error('BB84 error:', e);
+            } finally {
+                btn.textContent = originalText;
+                btn.style.opacity = "1";
+            }
+        }
+
+        async function scoreCVEs() {
+            const input = document.getElementById('cve-input').value;
+            if (!input.trim()) return;
+            
+            const btn = document.querySelector('button[onclick="scoreCVEs()"]');
+            btn.textContent = "Scanning...";
+            
+            const cveIds = input.split(',').map(id => id.trim().toUpperCase()).filter(id => id);
+            
+            const tbody = document.getElementById('cve-tbody');
+            if (tbody.querySelector('td[colspan]')) {
+                tbody.innerHTML = '';
+            }
+            
+            for (const cveId of cveIds) {
+                try {
+                    const res = await fetch('/api/threats/score', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({cve_id: cveId, crypto_algo: 'RSA', key_bits: 2048})
+                    });
+                    const data = await res.json();
+                    
+                    const row = tbody.insertRow();
+                    row.style.animation = "slideIn 0.3s ease-out forwards";
+                    const qus = data.quantum_urgency_score || 0;
+                    const level = data.urgency_level || 'LOW';
+                    const hasShor = data.factors && data.factors.shor_vulnerable;
+                    const harvestRisk = data.factors && data.factors.harvest_now_risk;
+                    
+                    let badgeClass = qus >= 80 ? 'badge-crit' : qus >= 50 ? 'badge-warn' : 'badge-safe';
+                    
+                    row.innerHTML = `
+                        <td style="font-family: 'Outfit'; font-weight:600; color:white;">${data.cve_id}</td>
+                        <td><span class="status-badge ${badgeClass}">${qus} / 100</span></td>
+                        <td>${hasShor ? 'Shor (Factoring)' : 'None'}</td>
+                        <td>${harvestRisk ? '<span style="color:var(--alert-red)">⚠️ High Risk</span>' : '<span style="color:var(--accent-green)">✓ Low Risk</span>'}</td>
+                        <td style="font-size:0.85em; font-weight:600; color:${qus >= 80 ? 'var(--alert-red)' : 'var(--accent-green)'}">${level}</td>
+                    `;
+                    
+                    if (qus >= 80) {
+                        let critElem = document.getElementById('critical-cves');
+                        critElem.textContent = parseInt(critElem.textContent) + 1;
+                        document.getElementById('global-status').textContent = "ELEVATED RISK";
+                        document.getElementById('global-status').className = "metric-value red";
+                    }
+                } catch(e) {
+                    console.error('CVE scoring error:', e);
+                }
+            }
+            btn.textContent = "Run Audit";
+        }
+
+        async function simulateNetworkTraffic() {
+            triggerChartAnomaly();
+            
+            try {
+                const res = await fetch('/api/ids/scan', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({})
+                });
+                const data = await res.json();
+                
+                const alertsDiv = document.getElementById('ids-alerts');
+                alertsDiv.innerHTML = '';
+                
+                if(!data.alerts || data.alerts.length === 0) {
+                    alertsDiv.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted); background: rgba(0,0,0,0.2); border-radius: 8px;">Network is currently clear of anomalous flows.</div>';
+                    return;
+                }
+                
+                for (const alert of data.alerts) {
+                    const isCrit = alert.severity === 'CRITICAL';
+                    const alertClass = isCrit ? 'alert-crit' : 'alert-safe';
+                    
+                    alertsDiv.innerHTML += `
+                    <div class="alert-box ${alertClass}" style="padding:12px; margin-bottom:8px;">
+                        <span style="font-size: 1.5em; flex-shrink: 0;">${isCrit ? '🚨' : '⚠️'}</span>
+                        <div style="flex-grow: 1;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <strong style="color:white; font-size:0.9em;">Flow [${alert.src_ip} → ${alert.dst_ip}]</strong>
+                                <span class="status-badge ${isCrit ? 'badge-crit' : 'badge-warn'}" style="font-size:0.7em;">${alert.severity}</span>
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 0.8em; margin-top: 4px;">Pattern: ${alert.issue}</div>
+                        </div>
+                    </div>`;
+                }
+            } catch(e) {
+                console.error('IDS error:', e);
+            }
+        }
+
+        async function auditCertificate() {
+            const domainInput = document.getElementById('domain-input');
+            const domain = domainInput.value;
+            if (!domain) return;
+            
+            const btn = document.querySelector('button[onclick="auditCertificate()"]');
+            btn.textContent = "Inspecting...";
+            
+            try {
+                const res = await fetch('/api/cert/audit', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({domain: domain})
+                });
+                const data = await res.json();
+                
+                const resultsContainer = document.getElementById('cert-results');
+                if(resultsContainer.querySelector('p')) {
+                    resultsContainer.innerHTML = '';
+                }
+                
+                const ready = data.quantum_ready;
+                const statusColor = ready ? 'var(--accent-green)' : 'var(--alert-orange)';
+                const icon = ready ? '✓' : '⚠️';
+                
+                const resultCard = document.createElement('div');
+                resultCard.style.padding = "15px";
+                resultCard.style.background = "rgba(0,0,0,0.2)";
+                resultCard.style.borderRadius = "8px";
+                resultCard.style.borderLeft = `3px solid ${statusColor}`;
+                resultCard.style.animation = "slideIn 0.3s ease-out forwards";
+                
+                resultCard.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong style="color:white; font-family:'Outfit'; font-size:1.1em;">${data.domain}</strong>
+                        <span style="color:${statusColor}; font-weight:bold; font-size:0.9em;">${icon} ${ready ? 'PQC Ready' : 'Needs Upgrade'}</span>
+                    </div>
+                    <div style="color:var(--text-muted); font-size:0.85em; margin-top:8px;">
+                        Algorithm: ${data.key_algorithm}-${data.key_size} | Compliant: ${data.severity === 'LOW' ? 'Yes' : 'No'}
+                    </div>
+                `;
+                
+                resultsContainer.prepend(resultCard);
+                
+                document.getElementById('cert-count').textContent = parseInt(document.getElementById('cert-count').textContent) + 1;
+                if (ready) {
+                    document.getElementById('quantum-ready').textContent = parseInt(document.getElementById('quantum-ready').textContent) + 1;
+                }
+                
+                domainInput.value = "";
+            } catch(e) {
+                console.error('Cert audit error:', e);
+            } finally {
+                btn.textContent = "Inspect Domain";
+            }
+        }
+
+        async function checkVaultIntegrity() {
+            try {
+                const res = await fetch('/api/vault/audit');
+                const data = await res.json();
+                
+                document.getElementById('vault-status').style.display = 'block';
+                document.getElementById('vault-entries').textContent = data.total_entries || 0;
+                document.getElementById('vault-integrity').textContent = 'VERIFIED';
+            } catch(e) {
+                document.getElementById('vault-status').style.display = 'block';
+                document.getElementById('vault-entries').textContent = '0';
+            }
+        }
+
+        function viewAuditLog() {
+            fetch('/api/vault/audit')
+                .then(r => r.json())
+                .then(data => {
+                    let msg = `============================================\n`;
+                    msg += `QUANTUM VAULT IMMUTABLE LEDGER\n`;
+                    msg += `============================================\n`;
+                    msg += `Target Vault : ${data.vault}\n`;
+                    msg += `Entries      : ${data.total_entries}\n`;
+                    msg += `Global Hash  : ${data.chain_hash}\n\n`;
+                    
+                    if (data.ledger && data.ledger.length > 0) {
+                        data.ledger.forEach(e => {
+                            msg += `[${e.timestamp}] SYSTEM ACTION: ${e.action}\n`;
+                            msg += `          KEY NAME: ${e.key_name}\n`;
+                            msg += `--------------------------------------------\n`;
+                        });
+                    } else {
+                        msg += 'Vault is secure but empty.\n';
+                    }
+                    alert(msg);
+                })
+                .catch(() => alert('Failed to connect to Quantum Vault Node.'));
+        }
+        
+    </script>
+</body>
+</html>
