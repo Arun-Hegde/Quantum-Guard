@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+*.cover
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+*.env
+venv/
+.venv/
+env/
+
+# Distribution & Build
+dist/
+build/
+*.egg-info/
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Documents (reports, generated files)
+*.docx
+*.pdf
+*.xlsx
+*.pptx
+
+# Project-specific
+*.log
+node_modules/
