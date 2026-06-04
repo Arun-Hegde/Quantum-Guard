@@ -1,19 +1,17 @@
-<![CDATA[<div align="center">
-
-<img src="https://img.shields.io/badge/QuantumGuard-Post--Quantum%20Security-00d4ff?style=for-the-badge&logo=shield&logoColor=white" alt="QuantumGuard"/>
+<div align="center">
 
 # ⚛️ QuantumGuard
 
-### _Quantum Cybersecurity Platform — Harvest-Now-Decrypt-Later Defense for the Post-Quantum Era_
+### *Quantum Cybersecurity Platform — Harvest-Now-Decrypt-Later Defense for the Post-Quantum Era*
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-3.0%2B-000000?style=flat-square&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
 [![Tests](https://img.shields.io/badge/Tests-15%2F15%20Passing-brightgreen?style=flat-square&logo=pytest)](https://pytest.org)
 [![Coverage](https://img.shields.io/badge/Coverage-100%25-success?style=flat-square)](https://github.com)
 [![NIST](https://img.shields.io/badge/NIST-FIPS%20203%2F204-blue?style=flat-square)](https://nist.gov)
-[![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready%20%E2%9C%85-brightgreen?style=flat-square)](https://github.com)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=flat-square)](https://github.com)
 [![Rating](https://img.shields.io/badge/Rating-9%2F10-gold?style=flat-square)](https://github.com)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
 </div>
 
@@ -21,9 +19,9 @@
 
 ## 📋 Table of Contents
 
-- [⚠️ The Quantum Threat](#-the-quantum-threat)
+- [⚠️ The Quantum Threat](#️-the-quantum-threat)
 - [🎯 Overview](#-overview)
-- [🏗️ System Architecture](#-system-architecture)
+- [🏗️ System Architecture](#️-system-architecture)
 - [🔐 Core Security Modules](#-core-security-modules)
   - [M1 — BB84 Quantum Key Distribution](#m1--bb84-quantum-key-distribution)
   - [M2 — Post-Quantum Cryptography Engine](#m2--post-quantum-cryptography-engine)
@@ -35,13 +33,13 @@
 - [📊 Performance Metrics](#-performance-metrics)
 - [⚡ Quick Start](#-quick-start)
 - [🌐 REST API Reference](#-rest-api-reference)
-- [🖥️ CLI Reference](#-cli-reference)
+- [🖥️ CLI Reference](#️-cli-reference)
 - [📁 Project Structure](#-project-structure)
-- [🛡️ Compliance & Standards](#-compliance--standards)
+- [🛡️ Compliance & Standards](#️-compliance--standards)
 - [🚀 Deployment](#-deployment)
 - [🏭 Real-World Use Cases](#-real-world-use-cases)
 - [🧪 Testing](#-testing)
-- [🛠️ Technology Stack](#-technology-stack)
+- [🛠️ Technology Stack](#️-technology-stack)
 - [📄 License](#-license)
 
 ---
@@ -131,12 +129,13 @@ The **BB84 protocol** is the world's first quantum cryptography protocol, enabli
 | 3 | Bob | Measure qubits using randomly chosen bases |
 | 4 | Both | Publicly reconcile bases — discard mismatches (**Sifted Key**) |
 | 5 | Both | Sample subset for **QBER (Quantum Bit Error Rate)** |
-| 6 | System | QBER > 12.5% → **Eavesdropper Detected!** / QBER ≤ 12.5% → **Secure Key Established** |
+| 6 | System | QBER > 12.5% → **Eavesdropper Detected!** / QBER ≤ 12.5% → **Secure Key** |
 
 **Key Features:**
+
 - ✅ Eavesdropper detection via QBER analysis
 - ✅ Configurable qubit count (default: 500 qubits)
-- ✅ Eve simulation mode for testing
+- ✅ Eve simulation mode for security testing
 - ✅ ~50% sifted key efficiency from raw transmission
 
 ```python
@@ -146,7 +145,7 @@ from quantumguard.core.qkd_bb84 import BB84QuantumKeyDistribution
 qkd = BB84QuantumKeyDistribution(num_qubits=1000, eve_eavesdrop=False)
 session = qkd.run_protocol()
 summary = qkd.get_session_summary()
-# → {"qber": "0.00%", "secure": True, "sifted_key_length": 498}
+# Output: {"qber": "0.00%", "secure": True, "sifted_key_length": 498}
 ```
 
 ---
@@ -156,6 +155,7 @@ summary = qkd.get_session_summary()
 Provides **quantum-resistant encryption** using NIST-standardized algorithms.
 
 **Encryption Stack:**
+
 ```
 Plaintext → AES-256-GCM (symmetric encryption)
                     ↑
@@ -165,10 +165,11 @@ Plaintext → AES-256-GCM (symmetric encryption)
 ```
 
 **Supported Operations:**
+
 - 🔑 Symmetric key generation (256-bit)
 - 🔒 Payload encryption with AES-256-GCM
-- 🔓 Payload decryption with authentication
-- 📦 Kyber-1024 key encapsulation
+- 🔓 Payload decryption with authentication tag
+- 📦 Kyber-1024 key encapsulation/decapsulation
 
 ```python
 from quantumguard.core.pqc_engine import PQCEngine
@@ -190,8 +191,11 @@ Calculates the **Quantum Urgency Score (QUS)** for CVEs, helping organizations p
 **Scoring Formula:**
 
 ```
-QUS = Shor Vulnerability (+60) + Grover Vulnerability (+35) + Key Size Penalty (+10) + Harvest Risk (+10)
-QUS is capped at 100
+QUS = Shor Vulnerability (+60)
+    + Grover Vulnerability (+35)
+    + Key Size Penalty (+10)
+    + Harvest-Now Risk (+10)
+    (capped at 100)
 ```
 
 **Urgency Levels:**
@@ -217,7 +221,7 @@ QUS is capped at 100
 ```bash
 # CLI usage
 python -m quantumguard.cli.cli threat-score --cve CVE-2024-1001 --algo RSA --key-bits 2048
-# → QUS: 80/100 [CRITICAL] - Migrate to Kyber-1024
+# Output: QUS: 80/100 [CRITICAL] - Migrate to Kyber-1024
 ```
 
 ---
@@ -232,12 +236,14 @@ Real-time packet inspection engine that detects:
 - ⚠️ **Unencrypted sensitive protocols** (HTTP, Telnet, FTP)
 
 **Detection Rules:**
+
 ```python
-WEAK_CIPHERS = ["DES", "RC4", "MD5", "SHA1", "RSA-1024", "DH-1024"]
+WEAK_CIPHERS     = ["DES", "RC4", "MD5", "SHA1", "RSA-1024", "DH-1024"]
 HARVEST_PATTERNS = ["bulk_encrypted_capture", "ssl_stripping", "downgrade_attack"]
 ```
 
 **Alert Severity Levels:**
+
 | Severity | Trigger | Response |
 |----------|---------|----------|
 | CRITICAL | Active harvest-now attack detected | Block + Alert |
@@ -257,11 +263,12 @@ Kyber KEM (Key Encapsulation) + AES-256-GCM (Data Encryption)
 ```
 
 **Channel Lifecycle:**
+
 1. **Initiation** — Generate Kyber-1024 keypair
 2. **Handshake** — Kyber KEM encapsulation for shared secret
 3. **Derivation** — Derive AES-256 session key from shared secret
 4. **Transmission** — Encrypt/decrypt data with AES-256-GCM
-5. **Termination** — Secure session teardown (keys zeroed)
+5. **Termination** — Secure session teardown (keys zeroed in memory)
 
 ---
 
@@ -270,14 +277,16 @@ Kyber KEM (Key Encapsulation) + AES-256-GCM (Data Encryption)
 Audits domains for **quantum-safe certificate compliance** and NIST readiness.
 
 **Audit Checks:**
+
 - ✅ Certificate algorithm (RSA vs ECDSA vs PQC)
-- ✅ Key size adequacy for post-quantum era
-- ✅ NIST SP 800-208 compliance check
+- ✅ Key size adequacy for the post-quantum era
+- ✅ NIST SP 800-208 compliance verification
 - ✅ Certificate expiry and chain validation
-- ✅ TLS version (1.2 vs 1.3)
+- ✅ TLS version assessment (1.2 vs 1.3)
 - ✅ Cipher suite quantum-safety rating
 
 **Output Sample:**
+
 ```json
 {
   "domain": "example.com",
@@ -299,6 +308,7 @@ Audits domains for **quantum-safe certificate compliance** and NIST readiness.
 An **immutable audit ledger** secrets management system with hash-chained tamper detection.
 
 **Security Architecture:**
+
 ```
 Secret → AES-256-GCM Encryption → Stored in Memory
               ↑
@@ -310,17 +320,19 @@ Secret → AES-256-GCM Encryption → Stored in Memory
 ```
 
 **Key Capabilities:**
+
 | Operation | Description |
 |-----------|-------------|
 | `store_secret` | Encrypt and store with Kyber+AES |
 | `retrieve_secret` | Decrypt and audit-log access |
-| `delete_secret` | Secure deletion with audit trail |
-| `get_audit_ledger` | Full immutable operation history |
-| `verify_ledger_integrity` | Detect any tampering attempt |
+| `delete_secret` | Secure deletion with immutable audit trail |
+| `get_audit_ledger` | Full tamper-evident operation history |
+| `verify_ledger_integrity` | Detect any tampering attempt via hash chain |
 
 **Audit Ledger Example:**
+
 ```
-[2024-04-13T10:30:00] STORE   api-key-prod    hash: a1b2c3d4...
+[2024-04-13T10:30:00] STORE    api-key-prod   hash: a1b2c3d4...
 [2024-04-13T10:31:00] RETRIEVE api-key-prod   hash: e5f6g7h8...
 [2024-04-13T10:32:00] DELETE   old-token      hash: i9j0k1l2...
 ```
@@ -331,7 +343,7 @@ Secret → AES-256-GCM Encryption → Stored in Memory
 
 ![Performance Metrics](docs/images/performance_metrics.png)
 
-### Response Times
+### Module Response Times
 
 | Module | Operation | Response Time | Throughput |
 |--------|-----------|:---:|:---:|
@@ -344,7 +356,7 @@ Secret → AES-256-GCM Encryption → Stored in Memory
 | M7 Quantum Vault | Store + ledger update | ~10ms | 100 ops/sec |
 | **API Average** | **All endpoints** | **~18ms** | **55 ops/sec** |
 
-### Test Coverage
+### Test Suite Results
 
 ```
 ========================== 15 passed in 2.14s ==========================
@@ -374,7 +386,7 @@ Coverage: 100% (15/15)
 
 - Python **3.10+**
 - pip package manager
-- (Optional) Docker for containerized deployment
+- Docker *(optional — for containerized deployment)*
 
 ### 1. Clone & Install
 
@@ -399,7 +411,7 @@ python -m quantumguard.api.app
 # Open: http://localhost:5000
 ```
 
-### 4. Access Web Dashboard
+### 4. Access the Web Dashboard
 
 Navigate to **http://localhost:5000** in your browser to view the real-time threat dashboard.
 
@@ -415,7 +427,7 @@ python -m quantumguard.cli.cli qkd --qubits 1000
 # Score a CVE for quantum risk
 python -m quantumguard.cli.cli threat-score --cve CVE-2024-1001 --algo RSA
 
-# Audit a certificate
+# Audit a TLS certificate
 python -m quantumguard.cli.cli cert-audit --domain example.com
 
 # Check platform status
@@ -426,7 +438,7 @@ python -m quantumguard.cli.cli status
 
 ## 🌐 REST API Reference
 
-Base URL: `http://localhost:5000`
+**Base URL:** `http://localhost:5000`
 
 ### Endpoints
 
@@ -445,12 +457,14 @@ Base URL: `http://localhost:5000`
 
 ### Example Requests
 
-**POST /api/qkd/bb84**
+**POST `/api/qkd/bb84`**
+
 ```bash
 curl -X POST http://localhost:5000/api/qkd/bb84 \
   -H "Content-Type: application/json" \
   -d '{"num_qubits": 1000, "eve_eavesdrop": false}'
 ```
+
 ```json
 {
   "total_qubits": 1000,
@@ -461,12 +475,14 @@ curl -X POST http://localhost:5000/api/qkd/bb84 \
 }
 ```
 
-**POST /api/threats/score**
+**POST `/api/threats/score`**
+
 ```bash
 curl -X POST http://localhost:5000/api/threats/score \
   -H "Content-Type: application/json" \
   -d '{"cve_id": "CVE-2024-1001", "crypto_algo": "RSA", "key_bits": 2048}'
 ```
+
 ```json
 {
   "cve_id": "CVE-2024-1001",
@@ -477,14 +493,16 @@ curl -X POST http://localhost:5000/api/threats/score \
 }
 ```
 
-**POST /api/cert/audit**
+**POST `/api/cert/audit`**
+
 ```bash
 curl -X POST http://localhost:5000/api/cert/audit \
   -H "Content-Type: application/json" \
   -d '{"domain": "google.com"}'
 ```
 
-**POST /api/vault/store**
+**POST `/api/vault/store`**
+
 ```bash
 curl -X POST http://localhost:5000/api/vault/store \
   -H "Content-Type: application/json" \
@@ -504,7 +522,7 @@ Commands:
   encrypt         Encrypt data using PQC (AES-256-GCM)
   decrypt         Decrypt PQC-encrypted data
   threat-score    Calculate Quantum Urgency Score for a CVE
-  threat-batch    Batch score multiple CVEs from JSON file
+  threat-batch    Batch score multiple CVEs from a JSON file
   threat-summary  Get summary of all known CVE threats
   ids-scan        Run Network IDS scan for weak cryptography
   cert-audit      Audit TLS certificate quantum-safety
@@ -514,7 +532,7 @@ Commands:
   vault-verify    Verify vault ledger integrity
   channel-init    Initialize a quantum-safe secure channel
   channel-send    Send encrypted message over secure channel
-  full-demo       Run full platform demonstration (all modules)
+  full-demo       Run full platform demonstration (all 7 modules)
 ```
 
 ### CLI Examples
@@ -526,7 +544,7 @@ python -m quantumguard.cli.cli full-demo
 # Test eavesdropper detection
 python -m quantumguard.cli.cli qkd --qubits 1000 --eve
 
-# Batch score CVEs from file
+# Batch score CVEs from a file
 python -m quantumguard.cli.cli threat-batch --file cves.json
 
 # Verify vault integrity
@@ -542,41 +560,41 @@ python -m quantumguard.cli.cli encrypt --input secret.txt --output secret.enc
 
 ```
 Quantum-Guard/
-├── 📁 quantumguard/                # Main package
-│   ├── 📁 api/                     # REST API (Flask)
+├── quantumguard/                    # Main package
+│   ├── api/                         # REST API (Flask)
 │   │   ├── __init__.py
-│   │   └── app.py                  # 10+ endpoint definitions
-│   ├── 📁 cli/                     # Command-line interface (Click)
+│   │   └── app.py                   # 10+ endpoint definitions
+│   ├── cli/                         # Command-line interface (Click)
 │   │   ├── __init__.py
-│   │   └── cli.py                  # 20+ CLI commands
-│   ├── 📁 core/                    # Core security modules
-│   │   ├── qkd_bb84.py             # M1: BB84 protocol simulation
-│   │   ├── pqc_engine.py           # M2: AES-256-GCM + Kyber-1024
-│   │   ├── threat_scorer.py        # M3: CVE quantum urgency scoring
-│   │   ├── quantum_ids.py          # M4: Network intrusion detection
-│   │   ├── secure_channel.py       # M5: Hybrid PQC secure channel
-│   │   ├── cert_auditor.py         # M6: TLS certificate auditing
-│   │   └── vault.py                # M7: Quantum-safe vault + ledger
-│   ├── 📁 dashboard/               # Web dashboard
-│   │   └── 📁 templates/
-│   │       └── index.html          # Glassmorphism UI
-│   └── requirements.txt            # Python dependencies
-├── 📁 docs/                        # Documentation assets
-│   └── 📁 images/                  # Workflow diagrams
+│   │   └── cli.py                   # 20+ CLI commands
+│   ├── core/                        # Core security modules
+│   │   ├── qkd_bb84.py              # M1: BB84 protocol simulation
+│   │   ├── pqc_engine.py            # M2: AES-256-GCM + Kyber-1024
+│   │   ├── threat_scorer.py         # M3: CVE quantum urgency scoring
+│   │   ├── quantum_ids.py           # M4: Network intrusion detection
+│   │   ├── secure_channel.py        # M5: Hybrid PQC secure channel
+│   │   ├── cert_auditor.py          # M6: TLS certificate auditing
+│   │   └── vault.py                 # M7: Quantum-safe vault + ledger
+│   ├── dashboard/                   # Web dashboard
+│   │   └── templates/
+│   │       └── index.html           # Glassmorphism UI
+│   └── requirements.txt             # Python dependencies
+├── docs/                            # Documentation assets
+│   └── images/                      # Workflow diagrams
 │       ├── architecture_diagram.png
 │       ├── bb84_workflow.png
 │       ├── threat_scoring_workflow.png
 │       ├── quantum_vault_workflow.png
 │       ├── harvest_now_threat.png
 │       └── performance_metrics.png
-├── 📁 QuantumGuard_Report_Final/   # Generated reports
+├── QuantumGuard_Report_Final/       # Generated reports
 │   ├── 01_EXECUTIVE_SUMMARY.txt
 │   ├── 02_COMPLETE_REPORT.txt
 │   ├── 03_QUICK_START_GUIDE.txt
 │   └── QuantumGuard_Complete_Report.pdf
-├── Dockerfile                      # Container configuration
-├── render.yaml                     # Render.com deployment config
-└── README.md                       # This file
+├── Dockerfile                       # Container configuration
+├── render.yaml                      # Render.com deployment config
+└── README.md                        # This file
 ```
 
 ---
@@ -606,7 +624,7 @@ docker build -t quantumguard .
 # Run the platform
 docker run -p 5000:5000 quantumguard
 
-# Access dashboard
+# Access the dashboard
 open http://localhost:5000
 ```
 
@@ -614,17 +632,17 @@ open http://localhost:5000
 
 QuantumGuard is pre-configured for one-click deployment on [Render.com](https://render.com):
 
-1. **Push to GitHub**: Create a repository and push your code
-2. **Sign Up**: Create a free account at [Render.com](https://render.com)
-3. **New Web Service**:
+1. **Push to GitHub** — Create a repository and push your code
+2. **Sign Up** — Create a free account at [Render.com](https://render.com)
+3. **New Web Service**
    - Click **New+** → **Web Service**
    - Connect your GitHub repository
-   - Render auto-detects the `Dockerfile` (or select Docker runtime manually)
+   - Render auto-detects the `Dockerfile` (or manually select Docker runtime)
    - Select the **Free** plan
-4. **Deploy**: Click **Create Web Service** — Render builds and deploys
-5. **Access**: Once status is **"Live"**, click the provided URL
+4. **Deploy** — Click **Create Web Service** — Render builds and deploys automatically
+5. **Access** — Once status shows **"Live"**, click the provided URL
 
-The `render.yaml` in the root directory pre-configures all settings automatically.
+The `render.yaml` in the root directory pre-configures all deployment settings.
 
 ### Environment Variables
 
@@ -638,20 +656,25 @@ The `render.yaml` in the root directory pre-configures all settings automaticall
 
 ## 🏭 Real-World Use Cases
 
-### 1. 🏦 Financial Institutions
-Protect inter-branch communications and secure historical encrypted transactions from retroactive quantum decryption. Migrate all RSA-based signing to Dilithium-3.
+### 🏦 Financial Institutions
 
-### 2. 🏥 Healthcare Providers
-Ensure HIPAA-compliant quantum-safe patient records with immutable audit trails using the QuantumVault module. Protect long-lived health data records.
+Protect inter-branch communications and secure historical encrypted transactions from retroactive quantum decryption. Migrate all RSA-based signing infrastructure to Dilithium-3.
 
-### 3. 🏛️ Government Agencies
-Shield classified communications from nation-state quantum adversaries. Implement BB84 QKD for key bootstrap and Kyber-1024 for inter-agency encrypted data.
+### 🏥 Healthcare Providers
 
-### 4. ⚙️ Enterprise DevOps
-Secure microservice communications, API keys, and deployment secrets with the Quantum Vault. Integrate post-quantum TLS via Cert Auditor scanning.
+Ensure HIPAA-compliant quantum-safe patient records with immutable audit trails using the QuantumVault module. Protect long-lived health data records against future quantum attacks.
 
-### 5. 🔬 Research & Academia
-Experiment with quantum cryptography protocols, benchmark post-quantum algorithms, and evaluate organizational quantum-readiness using the CVE Scorer.
+### 🏛️ Government Agencies
+
+Shield classified communications from nation-state quantum adversaries. Implement BB84 QKD for key bootstrap and Kyber-1024 for inter-agency encrypted data channels.
+
+### ⚙️ Enterprise DevOps
+
+Secure microservice communications, API keys, and deployment secrets with the Quantum Vault. Integrate post-quantum TLS via automated Cert Auditor scanning in CI/CD pipelines.
+
+### 🔬 Research & Academia
+
+Experiment with quantum cryptography protocols, benchmark post-quantum algorithms, and evaluate organizational quantum-readiness using the CVE Threat Scorer.
 
 ---
 
@@ -668,13 +691,13 @@ pytest tests/ -v --tb=short
 
 ```bash
 pytest tests/ --cov=quantumguard --cov-report=html
-open htmlcov/index.html
+# Open htmlcov/index.html in your browser
 ```
 
 ### Run Specific Module Tests
 
 ```bash
-pytest tests/test_bb84.py -v          # M1 BB84 tests
+pytest tests/test_bb84.py -v          # M1 BB84 QKD tests
 pytest tests/test_pqc.py -v           # M2 PQC Engine tests
 pytest tests/test_threat.py -v        # M3 Threat Scorer tests
 pytest tests/test_ids.py -v           # M4 IDS tests
@@ -696,6 +719,7 @@ Test Coverage: 100% | Modules: 7/7 | API: 10/10 | CLI: 20/20
 ## 🛠️ Technology Stack
 
 ### Backend
+
 | Technology | Version | Role |
 |------------|---------|------|
 | **Python** | 3.10+ | Core runtime |
@@ -704,6 +728,7 @@ Test Coverage: 100% | Modules: 7/7 | API: 10/10 | CLI: 20/20
 | **Rich** | 13.7.1+ | Beautiful terminal output |
 
 ### Cryptography
+
 | Technology | Version | Role |
 |------------|---------|------|
 | **cryptography** | 43.0.0+ | AES-256-GCM, hashing |
@@ -711,19 +736,22 @@ Test Coverage: 100% | Modules: 7/7 | API: 10/10 | CLI: 20/20
 | **numpy** | 1.25.0+ | Quantum simulation numerics |
 
 ### Network & Security
+
 | Technology | Version | Role |
 |------------|---------|------|
 | **Scapy** | 2.5.0+ | Network packet analysis |
 | **Requests** | 2.32.0+ | HTTP client for cert auditing |
 
 ### Frontend
+
 | Technology | Version | Role |
 |------------|---------|------|
 | **Vanilla JS** | ES2022 | Dashboard interactivity |
 | **Chart.js** | Latest | Real-time threat visualization |
-| **CSS3** | Glassmorphism | Dashboard design |
+| **CSS3** | Glassmorphism | Dashboard styling |
 
 ### Testing & Deployment
+
 | Technology | Version | Role |
 |------------|---------|------|
 | **pytest** | 8.2.0+ | Test framework |
@@ -740,10 +768,10 @@ Additional documentation is available in the `QuantumGuard_Report_Final/` direct
 
 | Document | Description |
 |----------|-------------|
-| [`01_EXECUTIVE_SUMMARY.txt`](QuantumGuard_Report_Final/01_EXECUTIVE_SUMMARY.txt) | High-level overview for stakeholders |
-| [`02_COMPLETE_REPORT.txt`](QuantumGuard_Report_Final/02_COMPLETE_REPORT.txt) | Full technical documentation |
-| [`03_QUICK_START_GUIDE.txt`](QuantumGuard_Report_Final/03_QUICK_START_GUIDE.txt) | Step-by-step setup guide |
-| [`QuantumGuard_Final_Report.pdf`](QuantumGuard_Final_Report.pdf) | Complete PDF report |
+| `01_EXECUTIVE_SUMMARY.txt` | High-level overview for stakeholders |
+| `02_COMPLETE_REPORT.txt` | Full technical documentation |
+| `03_QUICK_START_GUIDE.txt` | Step-by-step setup guide |
+| `QuantumGuard_Final_Report.pdf` | Complete PDF report |
 
 ---
 
@@ -779,11 +807,10 @@ See the project documentation for complete licensing details.
 
 **Built with ❤️ for the Post-Quantum Era**
 
-_"The best time to prepare for quantum threats was yesterday. The second-best time is now."_
+*"The best time to prepare for quantum threats was yesterday. The second-best time is now."*
 
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
-[![NIST](https://img.shields.io/badge/NIST%20Compliant-003087?style=for-the-badge)](https://nist.gov)
+[![NIST Compliant](https://img.shields.io/badge/NIST%20Compliant-003087?style=for-the-badge)](https://nist.gov)
 
 </div>
-]]>
